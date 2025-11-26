@@ -21,3 +21,8 @@ variable "project" {
     error_message = "project名は小文字英数字とハイフンのみ使用可能です。"
   }
 }
+
+variable "tfstate_bucket_name" {
+  description = "tfstate保存用S3バケット名"
+  type        = string
+}
