@@ -1,34 +1,25 @@
-resource "aws_s3_bucket" "tfstate" {
-  bucket = var.tfstate_bucket_name
+module "tfstate_bucket" {
+  source = "./modules/s3"
 
-  lifecycle {
-    prevent_destroy = true
-  }
+  bucket_name = var.tfstate_bucket_name
 }
 
-resource "aws_s3_bucket_versioning" "tfstate" {
-  bucket = aws_s3_bucket.tfstate.id
-
-  versioning_configuration {
-    status = "Enabled"
-  }
+moved {
+  from = aws_s3_bucket.tfstate
+  to   = module.tfstate_bucket.aws_s3_bucket.this
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "tfstate" {
-  bucket = aws_s3_bucket.tfstate.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-  }
+moved {
+  from = aws_s3_bucket_versioning.tfstate
+  to   = module.tfstate_bucket.aws_s3_bucket_versioning.this
 }
 
-resource "aws_s3_bucket_public_access_block" "tfstate" {
-  bucket = aws_s3_bucket.tfstate.id
+moved {
+  from = aws_s3_bucket_server_side_encryption_configuration.tfstate
+  to   = module.tfstate_bucket.aws_s3_bucket_server_side_encryption_configuration.this
+}
 
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+moved {
+  from = aws_s3_bucket_public_access_block.tfstate
+  to   = module.tfstate_bucket.aws_s3_bucket_public_access_block.this
 }
