@@ -6,11 +6,16 @@ commit-msg:
 pre-commit:
   parallel: true
   commands:
-    scan-git-secrets:
-      run: git secrets --scan
+    gitleaks:
+      run: gitleaks protect --staged
     markdownlint:
       glob: "*.md"
       run: markdownlint {staged_files}
     yamllint:
       glob: "*.{yml,yaml}"
       run: yamllint --strict {staged_files}
+
+pre-push:
+  commands:
+    gitleaks:
+      run: gitleaks detect
